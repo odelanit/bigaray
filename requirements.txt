@@ -1,0 +1,8 @@
+django==3.0.10
+psycopg2==2.8.6
+django-extensions==3.0.9
+django-simpleui==4.0.3
+django-cors-headers==3.4.0
+djangorestframework==3.11.1
+markdown==3.2.2
+django-filter==2.3.0
