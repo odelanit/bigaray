@@ -1,6 +1,5 @@
 from django.contrib import admin
 from django.contrib.admin.views.decorators import staff_member_required
-from django.core.paginator import Paginator
 from django.db import models
 from django.db.models import Count
 from django.http import JsonResponse
@@ -67,14 +66,18 @@ class StatsDataView(View):
         order_dir = request.POST.get('order[0][dir]', 'asc')
         if order_column == 0:
             if order_dir == 'asc':
-                sites = Site.objects.filter(name__contains=keyword).order_by('name')[start_index:(start_index + per_page)]
+                sites = Site.objects.filter(name__contains=keyword).order_by('name')[
+                        start_index:(start_index + per_page)]
             else:
-                sites = Site.objects.filter(name__contains=keyword).order_by('-name')[start_index:(start_index + per_page)]
+                sites = Site.objects.filter(name__contains=keyword).order_by('-name')[
+                        start_index:(start_index + per_page)]
         else:
             if order_dir == 'asc':
-                sites = Site.objects.annotate(u_count=Count('usersite')).filter(name__contains=keyword).order_by('u_count')[start_index:(start_index + per_page)]
+                sites = Site.objects.annotate(u_count=Count('usersite')).filter(name__contains=keyword).order_by(
+                    'u_count')[start_index:(start_index + per_page)]
             else:
-                sites = Site.objects.annotate(u_count=Count('usersite')).filter(name__contains=keyword).order_by('-u_count')[start_index:(start_index + per_page)]
+                sites = Site.objects.annotate(u_count=Count('usersite')).filter(name__contains=keyword).order_by(
+                    '-u_count')[start_index:(start_index + per_page)]
         site_list = []
         for site in sites:
             site_list.append({
@@ -100,6 +103,10 @@ class StatAdmin(admin.ModelAdmin):
             path('stats_data', StatsDataView.as_view()),
         ]
 
+
+admin.site.site_title = 'Bigaray Backend'
+admin.site.site_header = 'Bigaray Backend'
+admin.site.index_title = 'Bigaray Administration'
 
 admin.site.register(Site, SiteAdmin)
 admin.site.register(Product, ProductAdmin)

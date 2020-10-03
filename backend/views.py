@@ -3,6 +3,7 @@ from django.core.paginator import Paginator
 from django.forms import model_to_dict
 from django.http import JsonResponse
 from django.views import View
+from rest_framework import status
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
@@ -70,24 +71,8 @@ class UserCreateView(APIView):
         data = request.data
         serializer = UserSerializer(data=data)
         if serializer.is_valid():
-            validated_data = serializer.validated_data
-            username = validated_data.get('username')
-            email = validated_data.get('email')
-            password = validated_data.get('password')
-            first_name = validated_data.get('first_name')
-            last_name = validated_data.get('last_name')
-            gender = validated_data.get('gender')
-            birthday = validated_data.get('birthday')
-            country = validated_data.get('country')
-            user = User.objects.create_user(
-                username=username,
-                email=email,
-                password=password,
-                first_name=first_name,
-                last_name=last_name,
-                is_active=True
-            )
-            profile = UserProfile.objects.create(user=user, gender=gender, birthday=birthday, country=country)
+            user = serializer.save()
+            profile = user.profile
             token, created = Token.objects.get_or_create(user=user)
 
             return Response({
@@ -110,29 +95,53 @@ class UserCreateView(APIView):
             return response
 
 
+class UserUpdateView(APIView):
+    def patch(self, request, pk):
+        user = User.objects.get(pk=pk)
+        user_data = request.data['user']
+        serializer = UserSerializer(data=user_data, instance=user)
+        if serializer.is_valid():
+            user = serializer.save()
+            return Response({
+                'message': 'Success'
+            })
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 class HomePageDataView(APIView):
     authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         page_number = int(request.GET.get('page', 0))
         site_type = request.GET.get('site_type', 0)
+        explore_all = request.GET.get('all', False)
 
         user = request.user
-
-        if user.is_anonymous:
-            products = Product.objects.filter(site__type=site_type).order_by('?')
-            paginator = Paginator(products, 60)
-            page_obj = paginator.get_page(page_number)
-            result = {
-                'data': [model_to_dict(product) for product in page_obj.object_list]
-            }
-        else:
-            offset = page_number * 60
+        offset = page_number * 60
+        if explore_all == 'false':
             products = Product.objects.raw("SELECT products.* FROM products LEFT JOIN sites ON products.site_id = sites.id LEFT JOIN user_site us on sites.id = us.site_id WHERE us.user_id=%s AND sites.type=%s ORDER BY random() LIMIT 60 OFFSET %s", [user.id, site_type, offset])
-            result = {
-                'data': [model_to_dict(product) for product in products]
-            }
+        else:
+            products = Product.objects.raw("SELECT products.* FROM products LEFT JOIN sites ON products.site_id = sites.id WHERE sites.type=%s ORDER BY random() LIMIT 60 OFFSET %s", [site_type, offset])
 
+        product_list = []
+        for product in products:
+            product_list.append({
+                'id': product.id,
+                'title': product.title,
+                'image_filename': product.image_filename,
+                'price': product.price,
+                'sale_price': product.sale_price,
+                'product_link': product.product_link,
+                'hq_image_filename': product.hq_image_filename,
+                'site': product.site_id,
+                'name': product.site.name,
+                'display_name': product.site.display_name
+            })
+        result = {
+            'data': product_list
+        }
         return Response(result)
 
 
@@ -190,3 +199,36 @@ class ToggleUserSiteView(APIView):
             'sites': site_list,
             'my_profiles': user_site_list
         })
+
+
+class ProductsByBrandView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, name):
+        page_number = int(request.GET.get('page', 0))
+        site_type = request.GET.get('site_type', 0)
+
+        user = request.user
+
+        offset = page_number * 60
+        products = Product.objects.raw("SELECT products.* FROM products LEFT JOIN sites ON products.site_id = sites.id WHERE sites.type=%s AND sites.name=%s ORDER BY random() LIMIT 60 OFFSET %s", [site_type, name, offset])
+        # products = Product.objects.raw("SELECT products.* FROM products LEFT JOIN sites ON products.site_id = sites.id LEFT JOIN user_site us on sites.id = us.site_id WHERE sites.type=%s AND sites.name=%s ORDER BY random() LIMIT 60 OFFSET %s", [site_type, name, offset])
+        product_list = []
+        for product in products:
+            product_list.append({
+                'id': product.id,
+                'title': product.title,
+                'image_filename': product.image_filename,
+                'price': product.price,
+                'sale_price': product.sale_price,
+                'product_link': product.product_link,
+                'hq_image_filename': product.hq_image_filename,
+                'site': product.site_id,
+                'name': product.site.name,
+                'display_name': product.site.display_name
+            })
+        result = {
+            'data': product_list
+        }
+        return Response(result)
