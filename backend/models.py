@@ -1,9 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.models import User
 from django.db import models
-from django.shortcuts import render, redirect
-from django.urls import reverse, path
-from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
 
@@ -18,10 +15,8 @@ class Site(models.Model):
     ]
     name = models.CharField(max_length=255)
     display_name = models.CharField(max_length=255)
-    last_scraped = models.DateTimeField()
     scrape_url = models.URLField()
     short_url = models.CharField(max_length=255)
-    active = models.BooleanField(default=False)
     gender = models.IntegerField(choices=GENDERS)
     type = models.IntegerField(choices=TYPES)
     inserted_at = models.DateTimeField(auto_now_add=True)
@@ -31,48 +26,14 @@ class Site(models.Model):
 
     class Meta:
         db_table = 'sites'
-        ordering = ['-last_scraped']
 
     def __str__(self):
         return '{0} - {1} - {2}'.format(self.display_name, self.get_gender_display(), self.get_type_display())
 
-    def toggle_status(self):
-        if self.active:
-            self.active = False
-        else:
-            self.active = True
-        self.save()
-
 
 class SiteAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'display_name', 'last_scraped', 'short_url', 'active', 'gender', 'type', 'site_actions')
+    list_display = ('id', 'name', 'display_name', 'short_url', 'gender', 'type',)
     list_per_page = 20
-    readonly_fields = ('last_scraped', 'site_actions')
-
-    def toggle_status(self, request, object_id, *args, **kwargs):
-        site = self.get_object(request, object_id)
-        site.toggle_status()
-        return redirect(request.META['HTTP_REFERER'])
-
-    def get_urls(self):
-        urls = super().get_urls()
-        custom_urls = [
-            path('<path:object_id>/status/', self.admin_site.admin_view(self.toggle_status), name='backend_site_toggle_active')
-        ]
-        return custom_urls + urls
-
-    def site_actions(self, obj):
-        if obj.active:
-            name = 'Deactivate'
-        else:
-            name = 'Activate'
-        return format_html('<a class="el-button" href={}>{}</a>',
-                           reverse('admin:backend_site_toggle_active', kwargs={'object_id': obj.pk}),
-                           name
-                           )
-
-    site_actions.short_description = "Change Status"
-    site_actions.allow_tags = True
 
 
 class Product(models.Model):

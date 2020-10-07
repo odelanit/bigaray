@@ -1,6 +1,4 @@
 from django.contrib.auth.models import User
-from django.core.paginator import Paginator
-from django.forms import model_to_dict
 from django.http import JsonResponse
 from django.views import View
 from rest_framework import status
@@ -147,8 +145,8 @@ class HomePageDataView(APIView):
 
 class SiteListView(View):
     def get(self, request):
-        sites = Site.objects.all().values('id', 'name', 'display_name', 'last_scraped',
-                                          'scrape_url', 'short_url', 'active')
+        sites = Site.objects.all().values('id', 'name', 'display_name',
+                                          'scrape_url', 'short_url',)
         site_list = list(sites)
         result = {
             'data': site_list
@@ -162,8 +160,8 @@ class MyBrandsView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        sites = Site.objects.all().values('id', 'name', 'display_name', 'last_scraped',
-                                          'scrape_url', 'short_url', 'gender', 'active')
+        sites = Site.objects.all().values('id', 'name', 'display_name',
+                                          'scrape_url', 'short_url', 'gender',)
         site_list = list(sites)
         user_sites = UserSite.objects.filter(user=request.user).values('id', 'site_id', 'user_id')
         user_site_list = list(user_sites)
@@ -190,8 +188,8 @@ class ToggleUserSiteView(APIView):
             for pk in ids:
                 UserSite.objects.filter(user=request.user, site_id=pk).delete()
 
-        sites = Site.objects.all().values('id', 'name', 'display_name', 'last_scraped',
-                                          'scrape_url', 'short_url', 'gender', 'active')
+        sites = Site.objects.all().values('id', 'name', 'display_name',
+                                          'scrape_url', 'short_url', 'gender',)
         site_list = list(sites)
         user_sites = UserSite.objects.filter(user=request.user).values('user_id', 'site_id')
         user_site_list = list(user_sites)
