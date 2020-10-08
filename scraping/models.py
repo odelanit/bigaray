@@ -1,13 +1,14 @@
 from django.contrib import admin
 from django.db import models
-from django.utils.crypto import get_random_string
+from django.shortcuts import redirect
+from django.urls import reverse, path
+from django.utils.html import format_html
 
 from backend.models import Site
 
 
 def scraper_path(instance, filename):
-    name = get_random_string(length=16)
-    return "scrapers/{0}.py".format(name)
+    return "spiders/{0}".format(filename)
 
 
 def validate_py_extension(value):
@@ -26,12 +27,44 @@ class Scraper(models.Model):
     file = models.FileField(upload_to=scraper_path, null=True, validators=[validate_py_extension])
 
     is_active = models.BooleanField()
-    last_scraped = models.DateTimeField()
+    last_scraped = models.DateTimeField(null=True)
+
+    def toggle_status(self):
+        if self.is_active:
+            self.is_active = False
+        else:
+            self.is_active = True
+        self.save()
 
 
 class ScraperAdmin(admin.ModelAdmin):
-    list_display = ('site', 'is_active', 'start_time', 'end_time', 'last_scraped',)
-    readonly_fields = ('last_scraped',)
+    list_display = ('site', 'is_active', 'start_time', 'end_time', 'last_scraped', 'site_actions',)
+    readonly_fields = ('last_scraped', 'site_actions',)
+
+    def toggle_status(self, request, object_id, *args, **kwargs):
+        site = self.get_object(request, object_id)
+        site.toggle_status()
+        return redirect(request.META['HTTP_REFERER'])
+
+    def get_urls(self):
+        urls = super().get_urls()
+        custom_urls = [
+            path('<path:object_id>/status/', self.admin_site.admin_view(self.toggle_status), name='scraping_scraper_toggle_active')
+        ]
+        return custom_urls + urls
+
+    def site_actions(self, obj):
+        if obj.is_active:
+            name = 'Stop'
+        else:
+            name = 'Start'
+        return format_html('<a class="el-button" href={}>{}</a>',
+                           reverse('admin:scraping_scraper_toggle_active', kwargs={'object_id': obj.pk}),
+                           name
+                           )
+
+    site_actions.short_description = "Change Status"
+    site_actions.allow_tags = True
 
 
 class ScraperLog(models.Model):
