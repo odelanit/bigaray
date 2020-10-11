@@ -191,4 +191,4 @@ class SURLField(forms.URLField):
 
 class StatusForm(forms.Form):
     def form_action(self, site):
-        return site.toggle_status()
+        return site.start_scraping()

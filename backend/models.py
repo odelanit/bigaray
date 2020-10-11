@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.models import User
 from django.db import models
+from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
 
@@ -65,10 +66,11 @@ class Product(models.Model):
 
 
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('id', 'site', 'title', 'image_preview', 'price', 'sale_price', 'product_link', 'get_gender')
-    search_fields = ('title', 'price', 'sale_price')
+    list_display = (
+        'id', 'site', 'title', 'image_preview', 'price', 'sale_price', 'show_product_link',
+        'get_gender', 'inserted_at', 'updated_at')
+    search_fields = ('title', 'price', 'sale_price', 'show_product_link',)
     list_filter = ('site', 'site__gender')
-    # list_display_links = ('product_link',)
     readonly_fields = ('image_preview',)
     list_per_page = 50
 
@@ -83,6 +85,11 @@ class ProductAdmin(admin.ModelAdmin):
 
     get_gender.short_description = 'Gender'
     get_gender.admin_order_field = 'site__gender'
+
+    def show_product_link(self, obj):
+        return format_html('<a target="_blank" href={}>{}</a>', obj.product_link, obj.product_link)
+
+    show_product_link.allow_tags = True
 
 
 class UserSite(models.Model):

@@ -12,6 +12,6 @@ class ProductItem(scrapy.Item):
     image_urls = scrapy.Field()
     images = scrapy.Field()
     price = scrapy.Field()
-    # sale_price = scrapy.Field()
+    sale_price = scrapy.Field()
     product_link = scrapy.Field()
     # site = scrapy.Field()
