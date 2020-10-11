@@ -38,11 +38,11 @@ class SiteAdmin(admin.ModelAdmin):
 
 class Product(models.Model):
     title = models.CharField(max_length=255)
-    image_filename = models.CharField(max_length=255)
+    image_filename = models.CharField(max_length=255, null=True, blank=True)
     price = models.CharField(max_length=255)
     sale_price = models.CharField(max_length=255)
     product_link = models.URLField()
-    hq_image_filename = models.CharField(max_length=255)
+    hq_image_filename = models.CharField(max_length=255, null=True, blank=True)
 
     site = models.ForeignKey(Site, on_delete=models.CASCADE)
 
@@ -66,7 +66,7 @@ class Product(models.Model):
 
 class ProductAdmin(admin.ModelAdmin):
     list_display = ('id', 'site', 'title', 'image_preview', 'price', 'sale_price', 'product_link', 'get_gender')
-    search_fields = ('title', 'price', 'url', 'sale_price')
+    search_fields = ('title', 'price', 'sale_price')
     list_filter = ('site', 'site__gender')
     # list_display_links = ('product_link',)
     readonly_fields = ('image_preview',)

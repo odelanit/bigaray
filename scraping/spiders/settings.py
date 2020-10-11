@@ -13,7 +13,8 @@ SPIDER_MODULES = ['scraping.spiders']
 NEWSPIDER_MODULE = 'scraping.spiders'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-# USER_AGENT = 'scraping (+http://www.yourdomain.com)'
+USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 ' \
+             'Safari/537.36 Edg/85.0.564.70 '
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = True
@@ -61,9 +62,10 @@ ROBOTSTXT_OBEY = True
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
-# ITEM_PIPELINES = {
-#    'scraping.pipelines.ScrapingPipeline': 300,
-# }
+ITEM_PIPELINES = {
+    'scraping.spiders.pipelines.ProductPipeline': 300,
+    'scrapy.pipelines.images.ImagesPipeline': 1
+}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html
@@ -85,3 +87,4 @@ ROBOTSTXT_OBEY = True
 # HTTPCACHE_DIR = 'httpcache'
 # HTTPCACHE_IGNORE_HTTP_CODES = []
 # HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
+IMAGES_STORE = '/home/deploy/images'

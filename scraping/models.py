@@ -24,6 +24,7 @@ class Scraper(models.Model):
     site = models.OneToOneField(Site, on_delete=models.CASCADE)
     start_time = models.TimeField(null=True)
     end_time = models.TimeField(null=True)
+    description = models.TextField(null=True)
     file = models.FileField(upload_to=scraper_path, null=True, validators=[validate_py_extension])
 
     is_active = models.BooleanField()
@@ -69,3 +70,11 @@ class ScraperAdmin(admin.ModelAdmin):
 
 class ScraperLog(models.Model):
     scraper = models.ForeignKey(Scraper, on_delete=models.SET_NULL, null=True)
+    started_at = models.DateTimeField(null=True)
+    finished_at = models.DateTimeField(null=True)
+    description = models.TextField(null=True)
+
+
+class ScraperLogAdmin(admin.ModelAdmin):
+    list_display = ('scraper', 'started_at', 'finished_at')
+    readonly_fields = ('scraper', 'started_at', 'finished_at')
