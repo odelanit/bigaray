@@ -6,6 +6,7 @@ from django.db import models
 from django.shortcuts import redirect
 from django.urls import reverse, path
 from django.utils.html import format_html
+from django.utils.timezone import now
 from scrapy.crawler import CrawlerProcess, CrawlerRunner
 from scrapy.utils.project import get_project_settings
 from twisted.internet import reactor
@@ -61,6 +62,8 @@ class ScraperAdmin(admin.ModelAdmin):
     def start_scraping(self, request, object_id, *args, **kwargs):
         scraper = self.get_object(request, object_id)
         scraper.start()
+        scraper.last_scraped = now()
+        scraper.save()
         return redirect(request.META['HTTP_REFERER'])
 
     def get_urls(self):

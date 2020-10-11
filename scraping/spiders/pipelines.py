@@ -5,7 +5,6 @@
 
 
 # useful for handling different item types with a single interface
-from django.utils.timezone import now
 from itemadapter import ItemAdapter
 
 from backend.models import Site, Product
@@ -51,10 +50,6 @@ class ProductPipeline:
                     product_link=product_link, site=site
                 )
                 print("Product: {} added.".format(title))
-
-            site.scraper.last_scraped = now()
-            site.scraper.save()
-
         except Site.DoesNotExist:
             print("{} does not exist".format(site_name_gender_type))
         return item
