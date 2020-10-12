@@ -20,6 +20,7 @@ class Site(models.Model):
     short_url = models.CharField(max_length=255)
     gender = models.IntegerField(choices=GENDERS)
     type = models.IntegerField(choices=TYPES)
+    description = models.TextField(blank=True, null=True)
     inserted_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -27,6 +28,7 @@ class Site(models.Model):
 
     class Meta:
         db_table = 'sites'
+        ordering = ['name']
 
     def __str__(self):
         return '{0} - {1} - {2}'.format(self.display_name, self.get_gender_display(), self.get_type_display())
