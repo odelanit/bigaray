@@ -64,7 +64,8 @@ ROBOTSTXT_OBEY = True
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
     'scraping.spiders.pipelines.ProductPipeline': 300,
-    'scrapy.pipelines.images.ImagesPipeline': 1
+    'scrapy.pipelines.images.ImagesPipeline': 2,
+    'scraping.spiders.pipelines.CfImagesPipeline': 1,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

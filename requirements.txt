@@ -11,3 +11,5 @@ wfastcgi==3.0.0
 pydevd-pycharm==202.6948.78
 scrapy-djangoitem==1.1.1
 pillow==7.2.0
+js2xml==0.4.0
+scrapy-selenium==0.0.7

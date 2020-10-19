@@ -35,7 +35,7 @@ class Site(models.Model):
 
 
 class SiteAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'display_name', 'short_url', 'gender', 'type',)
+    list_display = ('id', 'name', 'display_name', 'short_url', 'gender', 'type', 'description')
     list_per_page = 20
 
 

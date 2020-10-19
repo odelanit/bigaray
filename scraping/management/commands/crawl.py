@@ -17,11 +17,7 @@ class Command(BaseCommand):
         settings = get_project_settings()
         process = CrawlerProcess(settings)
 
-        spider = Scraper.objects.get(id=3)
-        url = spider.file.name
-        url = url.replace('.py', '')
-        url = url.replace('/', '.')
-        file_path = "uploads.{0}.ProductSpider".format(url)
+        file_path = "uploads.spiders.simons_1_1.ProductSpider"
 
         ProductSpider = locate(file_path)
 
