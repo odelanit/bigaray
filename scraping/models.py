@@ -37,6 +37,9 @@ class Scraper(models.Model):
     # is_active = models.BooleanField()
     last_scraped = models.DateTimeField(null=True)
 
+    class Meta:
+        ordering = ['site__name']
+
     def start(self):
         settings_file_path = "scraping.spiders.settings"
         os.environ.setdefault('SCRAPY_SETTINGS_MODULE', settings_file_path)
@@ -61,9 +64,9 @@ class ScraperAdmin(admin.ModelAdmin):
 
     def start_scraping(self, request, object_id, *args, **kwargs):
         scraper = self.get_object(request, object_id)
-        scraper.start()
         scraper.last_scraped = now()
         scraper.save()
+        scraper.start()
         return redirect(request.META['HTTP_REFERER'])
 
     def get_urls(self):
