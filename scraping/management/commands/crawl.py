@@ -15,7 +15,7 @@ class Command(BaseCommand):
         settings = get_project_settings()
         process = CrawlerProcess(settings)
 
-        file_path = "uploads.spiders.simons_1_1.ProductSpider"
+        file_path = "uploads.spiders.bananarepublic_1_1.ProductSpider"
 
         ProductSpider = locate(file_path)
 
