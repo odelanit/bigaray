@@ -142,20 +142,35 @@ class SeleniumMiddleware:
         for argument in driver_arguments:
             driver_options.add_argument(argument)
         if proxy:
-            firefox_capabilities = webdriver.DesiredCapabilities.FIREFOX
-            firefox_capabilities['marionette'] = True
-            firefox_capabilities['proxy'] = {
-                "proxyType": "MANUAL",
-                "httpProxy": proxy,
-                "ftpProxy": proxy,
-                "sslProxy": proxy
-            }
-            capabilities = firefox_capabilities
-            driver_kwargs = {
-                'executable_path': driver_executable_path,
-                f'{driver_name}_options': driver_options,
-                'capabilities': capabilities
-            }
+            if driver_name == 'chrome':
+                chrome_capabilities = webdriver.DesiredCapabilities.CHROME
+                chrome_capabilities['proxy'] = {
+                    "proxyType": "MANUAL",
+                    "httpProxy": proxy,
+                    "ftpProxy": proxy,
+                    "sslProxy": proxy
+                }
+                capabilities = chrome_capabilities
+                driver_kwargs = {
+                    'executable_path': driver_executable_path,
+                    f'{driver_name}_options': driver_options,
+                    'capabilities': capabilities
+                }
+            else:
+                firefox_capabilities = webdriver.DesiredCapabilities.FIREFOX
+                firefox_capabilities['marionette'] = True
+                firefox_capabilities['proxy'] = {
+                    "proxyType": "MANUAL",
+                    "httpProxy": proxy,
+                    "ftpProxy": proxy,
+                    "sslProxy": proxy
+                }
+                capabilities = firefox_capabilities
+                driver_kwargs = {
+                    'executable_path': driver_executable_path,
+                    f'{driver_name}_options': driver_options,
+                    'capabilities': capabilities
+                }
         else:
             driver_kwargs = {
                 'executable_path': driver_executable_path,
@@ -214,9 +229,10 @@ class SeleniumMiddleware:
         if not isinstance(request, SeleniumRequest):
             return None
 
+        self.driver.implicitly_wait(30)
         self.driver.get(request.url)
 
-        self.scroll(self.driver, 1.5)
+        self.scroll(self.driver, 3)
 
         for cookie_name, cookie_value in request.cookies.items():
             self.driver.add_cookie(
