@@ -3,6 +3,8 @@ from pydoc import locate
 
 from django.contrib import admin
 from django.db import models
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
 from django.shortcuts import redirect
 from django.urls import reverse, path
 from django.utils.html import format_html
@@ -56,6 +58,11 @@ class Scraper(models.Model):
         d = runner.crawl(ProductSpider)
         d.addBoth(lambda _: reactor.stop())
         reactor.run()
+
+
+@receiver(post_delete, sender=Scraper)
+def submission_delete(sender, instance, **kwargs):
+    instance.file.delete(False)
 
 
 class ScraperAdmin(admin.ModelAdmin):
