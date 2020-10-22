@@ -1,6 +1,10 @@
+import os
+
 from django.contrib import admin
 from django.contrib.auth.models import User
 from django.db import models
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
@@ -64,6 +68,22 @@ class Product(models.Model):
             return mark_safe('<img src="/images/{0}" width="100" height="150" />'.format(self.image_filename))
         else:
             return ""
+
+
+@receiver(post_delete, sender=Product)
+def submission_delete(sender, instance, **kwargs):
+    base_path = "/home/deploy/images"
+    image_path = "{}/{}".format(base_path, instance.image_filename)
+    hq_image_path = "{}/{}".format(base_path, instance.hq_image_filename)
+    if os.path.exists(image_path):
+        os.remove(image_path)
+    else:
+        print('The product image does not exist.')
+
+    if os.path.exists(hq_image_path):
+        os.remove(hq_image_path)
+    else:
+        print('The product hq image does not exist.')
 
 
 class ProductAdmin(admin.ModelAdmin):
