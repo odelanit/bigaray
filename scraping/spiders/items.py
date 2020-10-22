@@ -14,4 +14,4 @@ class ProductItem(scrapy.Item):
     price = scrapy.Field()
     sale_price = scrapy.Field()
     product_link = scrapy.Field()
-    # site = scrapy.Field()
+    status = scrapy.Field()

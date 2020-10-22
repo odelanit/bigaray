@@ -5,6 +5,7 @@
 
 
 # useful for handling different item types with a single interface
+import logging
 from io import BytesIO
 
 from PIL import Image
@@ -57,6 +58,21 @@ class ProductPipeline:
                 print("Product: {} added.".format(title))
         except Site.DoesNotExist:
             print("{} does not exist".format(site_name_gender_type))
+        return item
+
+
+class ProductUpdatePipeline:
+    def process_item(self, item, spider):
+        adapter = ItemAdapter(item)
+        product_link = adapter.get('product_link')
+        status = adapter.get('status')
+        try:
+            product = Product.objects.get(product_link=product_link)
+            product.status = status
+            product.save()
+        except Product.DoesNotExist:
+            logger = logging.getLogger(__name__)
+            logger.warning("Product doesn't exist: {}".format(product_link))
         return item
 
 

@@ -1,4 +1,5 @@
 import os
+import logging
 
 from django.contrib import admin
 from django.contrib.auth.models import User
@@ -49,6 +50,7 @@ class Product(models.Model):
     sale_price = models.CharField(max_length=255)
     product_link = models.URLField()
     hq_image_filename = models.CharField(max_length=255, null=True, blank=True)
+    status = models.IntegerField(default=200)
 
     site = models.ForeignKey(Site, on_delete=models.CASCADE)
 
@@ -72,26 +74,30 @@ class Product(models.Model):
 
 @receiver(post_delete, sender=Product)
 def submission_delete(sender, instance, **kwargs):
+    logger = logging.getLogger(__name__)
+
     base_path = "/home/deploy/images"
     image_path = "{}/{}".format(base_path, instance.image_filename)
     hq_image_path = "{}/{}".format(base_path, instance.hq_image_filename)
     if os.path.exists(image_path):
+        logger.info('The product image deleted.')
         os.remove(image_path)
     else:
-        print('The product image does not exist.')
+        logger.warning('The product image does not exist.')
 
     if os.path.exists(hq_image_path):
+        logger.info('The product hq image deleted.')
         os.remove(hq_image_path)
     else:
-        print('The product hq image does not exist.')
+        logger.warning('The product hq image does not exist.')
 
 
 class ProductAdmin(admin.ModelAdmin):
     list_display = (
         'id', 'site', 'title', 'image_preview', 'price', 'sale_price', 'show_product_link',
-        'get_gender', 'inserted_at', 'updated_at')
+        'get_gender', 'status', 'inserted_at', 'updated_at')
     search_fields = ('title', 'price', 'sale_price', 'show_product_link',)
-    list_filter = ('site', 'site__gender')
+    list_filter = ('site', 'site__gender', 'status')
     readonly_fields = ('image_preview',)
     list_per_page = 50
 
