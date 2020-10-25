@@ -57,7 +57,7 @@ class UserSerializer(serializers.Serializer):
         return user
 
     def validate_username(self, username):
-        if self.instance.username == username:
+        if self.instance and self.instance.username == username:
             return username
         else:
             try:
@@ -67,7 +67,7 @@ class UserSerializer(serializers.Serializer):
                 return username
 
     def validate_email(self, email):
-        if self.instance.email == email:
+        if self.instance and self.instance.email == email:
             return email
         else:
             try:

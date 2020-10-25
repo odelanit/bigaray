@@ -67,9 +67,13 @@ class ProductUpdatePipeline:
         product_link = adapter.get('product_link')
         status = adapter.get('status')
         try:
-            product = Product.objects.get(product_link=product_link)
-            product.status = status
-            product.save()
+            products = Product.objects.filter(product_link=product_link)
+            if status == 404:
+                products.delete()
+            else:
+                for product in products:
+                    product.status = status
+                    product.save()
         except Product.DoesNotExist:
             logger = logging.getLogger(__name__)
             logger.warning("Product doesn't exist: {}".format(product_link))

@@ -85,11 +85,12 @@ class UserCreateView(APIView):
                     "country": profile.country,
                     "birthday": profile.birthday
                 },
-                'token': token.key
+                'meta': {
+                    'token': token.key
+                }
             })
         else:
-            response = Response(serializer.errors)
-            response.status_code = 400
+            response = Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             return response
 
 

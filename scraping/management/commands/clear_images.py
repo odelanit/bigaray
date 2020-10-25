@@ -1,3 +1,4 @@
+import logging
 import os
 
 from django.core.management import BaseCommand
@@ -10,8 +11,8 @@ class Command(BaseCommand):
     help = "Delete products having empty image field"
 
     def handle(self, *args, **options):
-        products = Product.objects.filter(Q(image_filename__isnull=True) | Q(product_link__isnull=True))
-        products.delete()
+        logger = logging.getLogger(__name__)
+        logger.info('Unavailable products are deleted.')
         for path, subdirs, files in os.walk('/home/deploy/images'):
             for name in files:
                 full_path = os.path.join(path, name)
@@ -21,4 +22,4 @@ class Command(BaseCommand):
                     Q(image_filename=image_filename) | Q(hq_image_filename=image_filename)).count()
                 if product_count == 0:
                     os.remove(full_path)
-                    print("Deleted: {0}".format(image_filename))
+                    logger.info("Deleted: {0}".format(image_filename))

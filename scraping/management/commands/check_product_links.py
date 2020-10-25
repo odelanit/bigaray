@@ -9,9 +9,9 @@ from scraping.spiders.spiders import BrokenLinksSpider
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        settings_file_path = "scraping.spiders.settings"
-        os.environ.setdefault('SCRAPY_SETTINGS_MODULE', settings_file_path)
-        settings = get_project_settings()
+        # settings_file_path = "scraping.spiders.settings"
+        # os.environ.setdefault('SCRAPY_SETTINGS_MODULE', settings_file_path)
+        # settings = get_project_settings()
         # process = CrawlerProcess(settings)
         process = CrawlerProcess()
 
