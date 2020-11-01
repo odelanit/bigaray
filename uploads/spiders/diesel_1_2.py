@@ -8,7 +8,7 @@ class ProductSpider(scrapy.Spider):
     allowed_domains = ['ca.diesel.com']
     root_path = 'https://ca.diesel.com'
     start_urls = [
-        'https://ca.diesel.com/en/sale-woman-ca/?lang=en&start=%start&sz=60' % start for start in range(0, 1350, 60)
+        'https://ca.diesel.com/en/sale-woman-ca/?lang=en&prefn1=gender&prefv1=Female&start=%start&sz=60' % start for start in range(0, 380, 60)
     ]
 
     def parse(self, response, **kwargs):
