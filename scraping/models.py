@@ -1,6 +1,3 @@
-import os
-from pydoc import locate
-
 from django.contrib import admin
 from django.db import models
 from django.db.models.signals import post_delete
@@ -9,9 +6,7 @@ from django.shortcuts import redirect
 from django.urls import reverse, path
 from django.utils.html import format_html
 from django.utils.timezone import now
-from scrapy.crawler import CrawlerProcess, CrawlerRunner
-from scrapy.utils.project import get_project_settings
-from twisted.internet import reactor
+from scrapyd_api import ScrapydAPI
 
 from backend.models import Site
 
@@ -35,6 +30,7 @@ class Scraper(models.Model):
     # end_time = models.TimeField(null=True)
     description = models.TextField(null=True, blank=True)
     file = models.FileField(upload_to=scraper_path, null=True, validators=[validate_py_extension])
+    task_id = models.CharField(null=True, blank=True)
 
     # is_active = models.BooleanField()
     last_scraped = models.DateTimeField(null=True)
@@ -43,6 +39,10 @@ class Scraper(models.Model):
         ordering = ['site__name']
 
     def start(self):
+        scrapyd = ScrapydAPI("http://localhost:6800")
+        spider_name = "{}_{}_{}".format(self.site.name, self.site.gender, self.site.type)
+        self.task_id = scrapyd.schedule("default", spider_name)
+        self.save()
         pass
 
 
@@ -52,8 +52,8 @@ def submission_delete(sender, instance, **kwargs):
 
 
 class ScraperAdmin(admin.ModelAdmin):
-    list_display = ('id', 'site', 'file', 'last_scraped', 'site_actions',)
-    readonly_fields = ('last_scraped', 'site_actions',)
+    list_display = ('id', 'site', 'file', 'last_scraped', 'task_id', 'site_actions',)
+    readonly_fields = ('last_scraped', 'task_id', 'site_actions',)
 
     def start_scraping(self, request, object_id, *args, **kwargs):
         scraper = self.get_object(request, object_id)

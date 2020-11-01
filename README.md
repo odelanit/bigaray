@@ -1,6 +1,6 @@
 #Bigaray
 
-In windows (Xampp):
+##### Deploy to Xampp In Windows:
 
 httpd.conf
 ```
@@ -36,3 +36,22 @@ httpd-vhosts.conf
 ```
 
 copy activate_this.py to venv/Scripts.
+
+##### Deploy scrapyd
+```
+$ nano /lib/systemd/system/scrapyd.service
+```
+```
+[Unit]
+Description=Scrapyd service
+After=network.target
+
+[Service]
+User=root
+Group=root
+WorkingDirectory=/home/deploy/bigaray
+ExecStart=/home/deploy/bigaray/venv/bin/scrapyd
+
+[Install]
+WantedBy=multi-user.target
+```
