@@ -30,7 +30,7 @@ class Scraper(models.Model):
     # end_time = models.TimeField(null=True)
     description = models.TextField(null=True, blank=True)
     file = models.FileField(upload_to=scraper_path, null=True, validators=[validate_py_extension])
-    task_id = models.CharField(null=True, blank=True)
+    task_id = models.CharField(null=True, blank=True, max_length=255)
 
     # is_active = models.BooleanField()
     last_scraped = models.DateTimeField(null=True)
