@@ -31,7 +31,7 @@ class BrokenLinksSpider(scrapy.Spider):
         self.start_urls = []
         time_threshold = timezone.now() - timedelta(days=30)
         products = Product.objects.filter(
-            inserted_at__lt=time_threshold, product_link__contains='allsaints'
+            inserted_at__lt=time_threshold
         ).order_by('inserted_at')
         for product in products:
             self.start_urls.append(product.product_link)
