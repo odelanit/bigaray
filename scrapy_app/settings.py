@@ -1,4 +1,4 @@
-# Scrapy settings for scraping project
+# Scrapy settings for scrapy_app project
 #
 # For simplicity, this file contains only settings considered important or
 # commonly used. You can find more settings consulting the documentation:
@@ -7,10 +7,10 @@
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
-BOT_NAME = 'scraping'
+BOT_NAME = 'scrapy_app'
 
-SPIDER_MODULES = ['scraping.spiders']
-NEWSPIDER_MODULE = 'scraping.spiders'
+SPIDER_MODULES = ['uploads.spiders']
+NEWSPIDER_MODULE = 'uploads.spiders'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 ' \
@@ -45,13 +45,13 @@ ROBOTSTXT_OBEY = True
 # Enable or disable spider middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 # SPIDER_MIDDLEWARES = {
-#    'scraping.middlewares.ScrapingSpiderMiddleware': 543,
+#    'scrapy_app.middlewares.ScrapyAppSpiderMiddleware': 543,
 # }
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 # DOWNLOADER_MIDDLEWARES = {
-#    'scraping.middlewares.ScrapingDownloaderMiddleware': 543,
+#    'scrapy_app.middlewares.ScrapyAppDownloaderMiddleware': 543,
 # }
 
 # Enable or disable extensions
@@ -63,7 +63,7 @@ ROBOTSTXT_OBEY = True
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-    'scraping.spiders.pipelines.ProductPipeline': 300,
+    'scrapy_app.pipelines.ProductPipeline': 300,
     'scrapy.pipelines.images.ImagesPipeline': 1,
 }
 

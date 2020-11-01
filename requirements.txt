@@ -13,3 +13,6 @@ scrapy-djangoitem==1.1.1
 pillow==7.2.0
 js2xml==0.4.0
 scrapy-selenium==0.0.7
+scrapyd==1.2.1
+pywin32==228
+mod-wsgi==4.7.1

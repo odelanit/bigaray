@@ -43,21 +43,7 @@ class Scraper(models.Model):
         ordering = ['site__name']
 
     def start(self):
-        settings_file_path = "scraping.spiders.settings"
-        os.environ.setdefault('SCRAPY_SETTINGS_MODULE', settings_file_path)
-        settings = get_project_settings()
-        runner = CrawlerRunner(settings)
-
-        url = self.file.name
-        url = url.replace('.py', '')
-        url = url.replace('/', '.')
-        file_path = "uploads.{0}.ProductSpider".format(url)
-
-        ProductSpider = locate(file_path)
-
-        d = runner.crawl(ProductSpider)
-        d.addBoth(lambda _: reactor.stop())
-        reactor.run()
+        pass
 
 
 @receiver(post_delete, sender=Scraper)

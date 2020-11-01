@@ -6,11 +6,11 @@ from django.utils import timezone
 from scrapy_selenium import SeleniumRequest
 
 from backend.models import Product
-from scraping.spiders.items import ProductItem
+from scrapy_app.items import ProductItem
 
 
 class BrokenLinksSpider(scrapy.Spider):
-    name = 'brokenlink-checker'
+    name = 'products_checker'
     custom_settings = {
         'ROBOTSTXT_OBEY': False,
         'DOWNLOAD_DELAY': 10,
@@ -22,7 +22,7 @@ class BrokenLinksSpider(scrapy.Spider):
             'scrapy_selenium.SeleniumMiddleware': 800,
         },
         'ITEM_PIPELINES': {
-            'scraping.spiders.pipelines.ProductUpdatePipeline': 300,
+            'scrapy_app.pipelines.ProductUpdatePipeline': 300,
         }
     }
 
