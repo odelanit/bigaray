@@ -77,15 +77,3 @@ class ScraperAdmin(admin.ModelAdmin):
 
     site_actions.short_description = "Change Status"
     site_actions.allow_tags = True
-
-
-class ScraperLog(models.Model):
-    scraper = models.ForeignKey(Scraper, on_delete=models.SET_NULL, null=True)
-    started_at = models.DateTimeField(null=True)
-    finished_at = models.DateTimeField(null=True)
-    description = models.TextField(null=True)
-
-
-class ScraperLogAdmin(admin.ModelAdmin):
-    list_display = ('scraper', 'started_at', 'finished_at')
-    readonly_fields = ('scraper', 'started_at', 'finished_at')
