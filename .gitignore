@@ -2,3 +2,5 @@
 /.idea/
 /backend-static/
 /geckodriver.log
+/dbs/
+/logs/
