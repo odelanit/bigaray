@@ -4,11 +4,10 @@ from django.contrib import admin
 from django.db import models
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect
 from django.urls import reverse, path
 from django.utils import timezone
 from django.utils.html import format_html
-from django.utils.timezone import now
 from django.views.static import serve
 from scrapyd_api import ScrapydAPI
 
@@ -36,7 +35,6 @@ class Scraper(models.Model):
     file = models.FileField(upload_to=scraper_path, null=True, validators=[validate_py_extension])
     task_id = models.CharField(null=True, blank=True, max_length=255)
 
-    # is_active = models.BooleanField()
     last_scraped = models.DateTimeField(null=True)
 
     class Meta:
@@ -111,3 +109,74 @@ class ScraperAdmin(admin.ModelAdmin):
     spider_log.short_description = "Log"
     spider_log.allow_tags = True
 
+
+class ProductChecker(models.Model):
+    name = models.CharField(max_length=255, null=True, unique=True)
+    start_time = models.TimeField(null=True)
+    description = models.TextField(null=True, blank=True)
+    file = models.FileField(upload_to=scraper_path, null=True, validators=[validate_py_extension])
+    task_id = models.CharField(null=True, blank=True, max_length=255)
+
+    last_scraped = models.DateTimeField(null=True)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.scrapyd = ScrapydAPI("http://localhost:6800")
+
+    def start(self):
+        self.task_id = self.scrapyd.schedule("default", self.name)
+        self.last_scraped = timezone.now()
+        self.save()
+
+    def spider_status(self):
+        if self.task_id:
+            job_status = self.scrapyd.job_status('default', self.task_id)
+            return job_status
+        else:
+            return "-"
+
+
+class ProductCheckerAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'file', 'start_time', 'last_scraped', 'spider_status', 'spider_log', 'site_actions',)
+    readonly_fields = ('last_scraped', 'spider_status', 'spider_log', 'site_actions',)
+
+    def start_scraping(self, request, object_id, *args, **kwargs):
+        scraper = self.get_object(request, object_id)
+        scraper.start()
+        return redirect(request.META['HTTP_REFERER'])
+
+    def serve_spider_log(self, request, object_id, *args, **kwargs):
+        scraper = self.get_object(request, object_id)
+        task_id = scraper.task_id
+        log_path = "{}/logs/default/{}/{}.log".format(BASE_DIR, scraper.name, task_id)
+        return serve(request, os.path.basename(log_path), os.path.dirname(log_path))
+
+    def get_urls(self):
+        urls = super().get_urls()
+        custom_urls = [
+            path('<path:object_id>/start/', self.admin_site.admin_view(self.start_scraping),
+                 name='scraping_checker_start'),
+            path('<path:object_id>/log/', self.admin_site.admin_view(self.serve_spider_log),
+                 name='scraping_checker_log')
+        ]
+        return custom_urls + urls
+
+    def site_actions(self, obj):
+        return format_html('<a class="el-button" href={}>Start</a>',
+                           reverse('admin:scraping_checker_start', kwargs={'object_id': obj.pk})
+                           )
+
+    site_actions.short_description = "Change Status"
+    site_actions.allow_tags = True
+
+    def spider_log(self, obj):
+        if obj.task_id:
+            log_path = format_html('<a href="{0}">View Log</a>',
+                                   reverse('admin:scraping_checker_log', kwargs={'object_id': obj.pk})
+                                   )
+        else:
+            log_path = '-'
+        return log_path
+
+    spider_log.short_description = "Log"
+    spider_log.allow_tags = True
