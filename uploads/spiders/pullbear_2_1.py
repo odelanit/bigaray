@@ -49,7 +49,7 @@ class ProductSpider(scrapy.Spider):
             item = ProductItem()
             item['title'] = product.css('.name::text').get().strip()
             item['price'] = product.css('.product-price--price::text').get().strip()
-            image_url = product.css('img::attr(src)').get()
+            image_url = product.css('img.image-responsive::attr(src)').get()
             if image_url:
                 if 'https:' not in image_url:
                     image_url = 'https:' + image_url
