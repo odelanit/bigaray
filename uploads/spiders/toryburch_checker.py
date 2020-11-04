@@ -1,6 +1,8 @@
+from datetime import timedelta
 from shutil import which
 
 import scrapy
+from django.utils import timezone
 from scrapy_selenium import SeleniumRequest
 
 from backend.models import Product
@@ -27,8 +29,10 @@ class BrokenLinksSpider(scrapy.Spider):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.start_urls = []
+        time_threshold = timezone.now() - timedelta(days=30)
         products = Product.objects.filter(
-            site__name__contains='Tory-burch'
+            site__name__contains='Tory-burch',
+            inserted_at__lt=time_threshold
         ).order_by('inserted_at')
         for product in products:
             self.start_urls.append(product.product_link)
