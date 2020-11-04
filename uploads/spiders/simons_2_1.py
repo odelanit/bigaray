@@ -1,9 +1,6 @@
-import os
 from shutil import which
-from urllib.parse import urlencode
 
 import scrapy
-from scrapy.utils.project import get_project_settings
 from scrapy_selenium import SeleniumRequest
 
 from scrapy_app.items import ProductItem
