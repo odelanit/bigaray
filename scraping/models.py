@@ -101,8 +101,9 @@ class ScraperAdmin(admin.ModelAdmin):
         return custom_urls + urls
 
     def site_actions(self, obj):
-        return format_html('<a class="el-button" href={}>Start</a>',
-                           reverse('admin:scraping_scraper_start', kwargs={'object_id': obj.pk})
+        return format_html('<a class="el-button" href={}>Start</a><a class="el-button" href={}>Stop</a>',
+                           reverse('admin:scraping_scraper_start', kwargs={'object_id': obj.pk}),
+                           reverse('admin:scraping_scraper_stop', kwargs={'object_id': obj.pk}),
                            )
 
     site_actions.short_description = "Change Status"
