@@ -140,6 +140,10 @@ class ProductChecker(models.Model):
         self.last_scraped = timezone.now()
         self.save()
 
+    def stop(self):
+        self.scrapyd.cancel("default", self.task_id)
+        self.save()
+
     def spider_status(self):
         if self.task_id:
             job_status = self.scrapyd.job_status('default', self.task_id)
@@ -157,6 +161,11 @@ class ProductCheckerAdmin(admin.ModelAdmin):
         scraper.start()
         return redirect(request.META['HTTP_REFERER'])
 
+    def stop_scraping(self, request, object_id, *args, **kwargs):
+        scraper = self.get_object(request, object_id)
+        scraper.stop()
+        return redirect(request.META['HTTP_REFERER'])
+
     def serve_spider_log(self, request, object_id, *args, **kwargs):
         scraper = self.get_object(request, object_id)
         task_id = scraper.task_id
@@ -168,14 +177,17 @@ class ProductCheckerAdmin(admin.ModelAdmin):
         custom_urls = [
             path('<path:object_id>/start/', self.admin_site.admin_view(self.start_scraping),
                  name='scraping_checker_start'),
+            path('<path:object_id>/stop/', self.admin_site.admin_view(self.stop_scraping),
+                 name='scraping_checker_stop'),
             path('<path:object_id>/log/', self.admin_site.admin_view(self.serve_spider_log),
                  name='scraping_checker_log')
         ]
         return custom_urls + urls
 
     def site_actions(self, obj):
-        return format_html('<a class="el-button" href={}>Start</a>',
-                           reverse('admin:scraping_checker_start', kwargs={'object_id': obj.pk})
+        return format_html('<a class="el-button" href={}>Start</a><a class="el-button" href={}>Stop</a>',
+                           reverse('admin:scraping_checker_start', kwargs={'object_id': obj.pk}),
+                           reverse('admin:scraping_checker_stop', kwargs={'object_id': obj.pk}),
                            )
 
     site_actions.short_description = "Change Status"
