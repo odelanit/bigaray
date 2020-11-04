@@ -7,7 +7,7 @@ class ProductSpider(scrapy.Spider):
     name = 'Urban-outfitters_2_2'  # name_gender_type
     allowed_domains = ['www.urbanoutfitters.com']
     start_urls = [
-        'https://www.urbanoutfitters.com/womens-clothing-sale?page=%s' % page for page in range(1, 17)
+        'https://www.urbanoutfitters.com/mens-clothing-sale?page=%s' % page for page in range(1, 8)
     ]
     custom_settings = {
         "DOWNLOAD_DELAY": 20
