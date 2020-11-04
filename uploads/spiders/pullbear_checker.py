@@ -44,8 +44,8 @@ class BrokenLinksSpider(scrapy.Spider):
     def parse(self, response, **kwargs):
         item = ProductItem()
         item['product_link'] = response.request.url
-        error_modal = response.css('.c-popover--warning')
-        item['status'] = 200
-        if error_modal:
-            item['status'] = 404
+        product_card = response.css('#productCard')
+        item['status'] = 404
+        if product_card:
+            item['status'] = 200
         yield item
