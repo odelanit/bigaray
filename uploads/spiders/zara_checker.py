@@ -45,7 +45,8 @@ class BrokenLinksSpider(scrapy.Spider):
         item = ProductItem()
         item['product_link'] = response.request.url
         item['status'] = response.status
-        driver = response.meta.get('driver')
-        if 'Search' in driver.title:
-            item['status'] = 404
+        product_tag = response.css('#product')
+        item['status'] = 404
+        if product_tag:
+            item['status'] = 200
         yield item
