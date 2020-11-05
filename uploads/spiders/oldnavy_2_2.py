@@ -19,11 +19,11 @@ class ProductSpider(scrapy.Spider):
         # 'SELENIUM_DRIVER_ARGUMENTS': [],
         'SELENIUM_PROXY': '46.250.220.148:3128',
         'DOWNLOADER_MIDDLEWARES': {
-            'scraping.spiders.middlewares.SeleniumMiddleware': 800,
+            'scrapy_app.middlewares.SeleniumMiddleware': 800,
         },
         'ITEM_PIPELINES': {
-            'scraping.spiders.pipelines.ProductPipeline': 300,
-            'scraping.spiders.pipelines.ImagesWithSeleniumProxyPipeline': 2,
+            'scrapy_app.pipelines.ProductPipeline': 300,
+            'scrapy_app.pipelines.ImagesWithSeleniumProxyPipeline': 2,
         }
     }
 
