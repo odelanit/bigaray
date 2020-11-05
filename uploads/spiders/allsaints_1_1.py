@@ -9,10 +9,10 @@ class ProductSpider(scrapy.Spider):
     domain = 'https://www.ca.allsaints.com'
     start_urls = ['https://www.ca.allsaints.com/women/new/style,any/colour,any/size,any/']
 
-    def start_requests(self):
-        for url in self.start_urls:
-            proxy = 'http://191.102.232.130:3128'
-            yield scrapy.Request(url=url, callback=self.parse, meta={'proxy': proxy})
+    # def start_requests(self):
+    #     for url in self.start_urls:
+    #         proxy = 'http://191.102.232.130:3128'
+    #         yield scrapy.Request(url=url, callback=self.parse, meta={'proxy': proxy})
 
     def parse(self, response, **kwargs):
         products = response.css('div.product-item')
