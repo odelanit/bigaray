@@ -10,7 +10,7 @@ from scrapy_app.items import ProductItem
 
 
 class BrokenLinksSpider(scrapy.Spider):
-    name = 'tedbaker_checker'
+    name = 'stories_checker'
     custom_settings = {
         'ROBOTSTXT_OBEY': False,
         'DOWNLOAD_DELAY': 10,

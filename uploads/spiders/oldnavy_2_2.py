@@ -17,7 +17,7 @@ class ProductSpider(scrapy.Spider):
         'SELENIUM_DRIVER_EXECUTABLE_PATH': which('geckodriver'),
         'SELENIUM_DRIVER_ARGUMENTS': ['-headless'],
         # 'SELENIUM_DRIVER_ARGUMENTS': [],
-        'SELENIUM_PROXY': '46.250.220.148:3128',
+        # 'SELENIUM_PROXY': '46.250.220.148:3128',
         'DOWNLOADER_MIDDLEWARES': {
             'scrapy_app.middlewares.SeleniumMiddleware': 800,
         },
