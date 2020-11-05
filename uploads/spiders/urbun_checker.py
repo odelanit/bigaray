@@ -45,8 +45,9 @@ class BrokenLinksSpider(scrapy.Spider):
         item = ProductItem()
         item['product_link'] = response.request.url
         item['status'] = response.status
-        no_result_tag = response.css('.c-pwa-tile-no-results')
-        not_found_tag = response.css('.c-pwa-404')
-        if no_result_tag or not_found_tag:
+        no_result_tag1 = response.css('.c-pwa-tile-no-results')
+        no_result_tag2 = response.css('.c-pwa-404')
+        no_result_tag3 = response.css('.c-pwa-product-oos-rec-tray__lead-message')
+        if no_result_tag1 or no_result_tag2 or no_result_tag3:
             item['status'] = 404
         yield item
