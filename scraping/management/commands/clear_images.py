@@ -12,7 +12,6 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         logger = logging.getLogger(__name__)
-        logger.info('Unavailable products are deleted.')
         for path, subdirs, files in os.walk('/home/deploy/images'):
             for name in files:
                 full_path = os.path.join(path, name)
