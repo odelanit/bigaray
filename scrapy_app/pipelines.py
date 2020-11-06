@@ -8,8 +8,10 @@
 import logging
 from io import BytesIO
 
+import scrapy
 from PIL import Image
 from itemadapter import ItemAdapter
+from scrapy.exceptions import DropItem
 from scrapy.pipelines.images import ImagesPipeline, ImageException
 from scrapy_selenium import SeleniumRequest
 
@@ -85,7 +87,7 @@ class ImagesWithSeleniumProxyPipeline(ImagesPipeline):
         for image_url in item['image_urls']:
             yield SeleniumRequest(url=image_url)
 
-    def get_images(self, response, request, info):
+    def get_images(self, response, request, info, **kwargs):
         driver = response.meta['driver']
         image_src = driver.find_element_by_tag_name('img')
         path = self.file_path(request, response=response, info=info)

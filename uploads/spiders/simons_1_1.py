@@ -17,8 +17,13 @@ class ProductSpider(scrapy.Spider):
         'SELENIUM_DRIVER_NAME': 'firefox',
         'SELENIUM_DRIVER_EXECUTABLE_PATH': which('geckodriver'),
         'SELENIUM_DRIVER_ARGUMENTS': ['-headless'],
+        # 'SELENIUM_DRIVER_ARGUMENTS': [],
         'DOWNLOADER_MIDDLEWARES': {
             'scrapy_selenium.SeleniumMiddleware': 800,
+        },
+        'ITEM_PIPELINES': {
+            'scrapy_app.pipelines.ProductPipeline': 300,
+            'scrapy_app.pipelines.ImagesWithSeleniumProxyPipeline': 2
         }
     }
 
