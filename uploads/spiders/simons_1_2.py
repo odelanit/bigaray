@@ -10,7 +10,7 @@ class ProductSpider(scrapy.Spider):
     name = 'Simons_1_2'  # name_gender_type
     allowed_domains = ['www.simons.ca']
     start_urls = [
-        'https://www.simons.ca/fr/vetements-femme/soldes--sale-6660?page=%s' % page for page in range(1, 4)
+        'https://www.simons.ca/fr/vetements-femme/soldes--sale-6660?page=%s' % page for page in range(1, 7)
     ]
     base_url = 'https://www.simons.ca'
     custom_settings = {
