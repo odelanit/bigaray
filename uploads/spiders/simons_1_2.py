@@ -19,6 +19,10 @@ class ProductSpider(scrapy.Spider):
         'SELENIUM_DRIVER_ARGUMENTS': ['-headless'],
         'DOWNLOADER_MIDDLEWARES': {
             'scrapy_selenium.SeleniumMiddleware': 800,
+        },
+        'ITEM_PIPELINES': {
+            'scrapy_app.pipelines.ProductPipeline': 300,
+            'scrapy_app.pipelines.ImagesWithSeleniumProxyPipeline': 2
         }
     }
 
@@ -37,6 +41,10 @@ class ProductSpider(scrapy.Spider):
             item['sale_price'] = price.strip()
             image_url = product.css('img::attr(src)').get()
             item['image_urls'] = [image_url, image_url]
-            item['product_link'] = product.css('a.desc::attr(href)').get()
+            product_link = product.css('a.desc::attr(href)').get()
+            if self.base_url not in product_link:
+                item['product_link'] = self.base_url + product.css('a.desc::attr(href)').get()
+            else:
+                item['product_link'] = product.css('a.desc::attr(href)').get()
             yield item
 
