@@ -40,6 +40,10 @@ class ProductSpider(scrapy.Spider):
             item['price'] = price
             image_url = product.css('img::attr(src)').get()
             item['image_urls'] = [image_url, image_url]
-            item['product_link'] = self.base_url + product.css('a.desc::attr(href)').get()
+            product_link = product.css('a.desc::attr(href)').get()
+            if self.base_url not in product_link:
+                item['product_link'] = self.base_url + product.css('a.desc::attr(href)').get()
+            else:
+                item['product_link'] = product.css('a.desc::attr(href)').get()
             yield item
 
