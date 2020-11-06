@@ -19,7 +19,7 @@ class ProductSpider(scrapy.Spider):
         products = response.css('.cy-product-block')
         for product in products:
             item = ProductItem()
-            title = product.css('.title-product > p::text').get()
+            title = product.css('.title-product > h2::text').get()
             if title:
                 item['title'] = title.strip()
             else:
