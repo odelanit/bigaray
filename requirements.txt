@@ -1,7 +1,7 @@
+wheel==0.35.1
 django==3.1.3
 psycopg2==2.8.6
 django-extensions==3.0.9
-django-simpleui==4.0.3
 django-cors-headers==3.5.0
 djangorestframework==3.12.1
 markdown==3.3.3
@@ -16,6 +16,5 @@ scrapy-selenium==0.0.7
 scrapyd==1.2.1
 python-scrapyd-api==2.1.2
 celery==5.0.1
-wheel==0.35.1
 redis==3.5.3
 django-celery-beat==2.1.0
