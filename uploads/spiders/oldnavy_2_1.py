@@ -15,8 +15,8 @@ class ProductSpider(scrapy.Spider):
     custom_settings = {
         'SELENIUM_DRIVER_NAME': 'firefox',
         'SELENIUM_DRIVER_EXECUTABLE_PATH': which('geckodriver'),
-        # 'SELENIUM_DRIVER_ARGUMENTS': ['-headless'],
-        'SELENIUM_DRIVER_ARGUMENTS': [],
+        'SELENIUM_DRIVER_ARGUMENTS': ['-headless'],
+        # 'SELENIUM_DRIVER_ARGUMENTS': [],
         # 'SELENIUM_PROXY': '46.250.220.148:3128',
         'DOWNLOADER_MIDDLEWARES': {
             'scrapy_app.middlewares.SeleniumMiddleware': 800,

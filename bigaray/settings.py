@@ -37,7 +37,7 @@ ALLOWED_HOSTS = [
 # Application definition
 
 INSTALLED_APPS = [
-    # 'simpleui',
+    'backend_ui',
     'backend',
     'django.contrib.admin',
     'django.contrib.auth',
