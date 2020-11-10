@@ -16,3 +16,4 @@ js2xml==0.4.0
 scrapy-selenium==0.0.7
 scrapyd==1.2.1
 python-scrapyd-api==2.1.2
+scrapy-do==0.4.0
