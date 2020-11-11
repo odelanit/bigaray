@@ -47,7 +47,6 @@ class Scraper(models.Model):
     def start(self):
         spider_name = "{}_{}_{}".format(self.site.name, self.site.gender, self.site.type)
         self.task_id = self.scrapyd.schedule("default", spider_name)
-        self.last_scraped = timezone.now()
         self.save()
 
     def stop(self):
@@ -137,7 +136,6 @@ class ProductChecker(models.Model):
 
     def start(self):
         self.task_id = self.scrapyd.schedule("default", self.name)
-        self.last_scraped = timezone.now()
         self.save()
 
     def stop(self):

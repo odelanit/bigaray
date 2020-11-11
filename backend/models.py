@@ -47,7 +47,7 @@ class Product(models.Model):
     title = models.CharField(max_length=255)
     image_filename = models.CharField(max_length=255, null=True, blank=True)
     price = models.CharField(max_length=255)
-    sale_price = models.CharField(max_length=255)
+    sale_price = models.CharField(max_length=255, null=True, blank=True)
     product_link = models.URLField()
     hq_image_filename = models.CharField(max_length=255, null=True, blank=True)
     status = models.IntegerField(default=200)
