@@ -1,8 +1,11 @@
 from shutil import which
 
 import scrapy
+from django.utils import timezone
+from scrapy import signals
 from scrapy_selenium import SeleniumRequest
 
+from scraping.models import Scraper
 from scrapy_app.items import ProductItem
 
 
@@ -30,6 +33,12 @@ class ProductSpider(scrapy.Spider):
         }
     }
 
+    @classmethod
+    def from_crawler(cls, crawler, *args, **kwargs):
+        spider = super(ProductSpider, cls).from_crawler(crawler, *args, **kwargs)
+        crawler.signals.connect(spider.spider_closed, signal=signals.spider_closed)
+        return spider
+
     def start_requests(self):
         for url in self.start_urls:
             yield SeleniumRequest(url=url)
@@ -49,3 +58,12 @@ class ProductSpider(scrapy.Spider):
                 item['image_urls'] = [image_url, image_url]
                 item['product_link'] = product_link
                 yield item
+
+    def spider_closed(self, spider, reason):
+        a = spider.name.split('_')
+        try:
+            scraper = Scraper.objects.get(site__name=a[0], site__gender=int(a[1]), site__type=int(a[2]))
+            scraper.last_scraped = timezone.now()
+            scraper.save()
+        except Scraper.DoesNotExist:
+            pass
