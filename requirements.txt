@@ -9,11 +9,9 @@ markdown==3.3.3
 django-filter==2.4.0
 scrapy==2.4.0
 wfastcgi==3.0.0
-pydevd-pycharm==203.5419.8
 scrapy-djangoitem==1.1.1
 pillow==8.0.1
 js2xml==0.4.0
 scrapy-selenium==0.0.7
 scrapyd==1.2.1
 python-scrapyd-api==2.1.2
-scrapy-do==0.4.0
