@@ -96,7 +96,7 @@ class ProductAdmin(admin.ModelAdmin):
     list_display = (
         'id', 'site', 'title', 'image_preview', 'price', 'sale_price', 'show_product_link',
         'get_gender', 'status', 'inserted_at', 'updated_at')
-    search_fields = ('title', 'price', 'sale_price', 'show_product_link',)
+    search_fields = ('title', 'price', 'sale_price', 'product_link',)
     list_filter = ('site', 'site__gender', 'status')
     readonly_fields = ('image_preview',)
     list_per_page = 50
