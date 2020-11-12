@@ -6,7 +6,6 @@ from django.db.models.signals import post_delete
 from django.dispatch import receiver
 from django.shortcuts import redirect
 from django.urls import reverse, path
-from django.utils import timezone
 from django.utils.html import format_html
 from django.views.static import serve
 from scrapyd_api import ScrapydAPI
@@ -30,7 +29,6 @@ def validate_py_extension(value):
 
 class Scraper(models.Model):
     site = models.OneToOneField(Site, on_delete=models.CASCADE)
-    start_time = models.TimeField(null=True)
     description = models.TextField(null=True, blank=True)
     file = models.FileField(upload_to=scraper_path, null=True, validators=[validate_py_extension])
     task_id = models.CharField(null=True, blank=True, max_length=255)
@@ -67,7 +65,7 @@ def submission_delete(sender, instance, **kwargs):
 
 
 class ScraperAdmin(admin.ModelAdmin):
-    list_display = ('id', 'site', 'file', 'start_time', 'last_scraped', 'spider_status', 'spider_log', 'site_actions',)
+    list_display = ('id', 'site', 'file', 'last_scraped', 'spider_status', 'spider_log', 'site_actions',)
     readonly_fields = ('last_scraped', 'spider_status', 'spider_log', 'site_actions',)
 
     def start_scraping(self, request, object_id, *args, **kwargs):
@@ -123,7 +121,6 @@ class ScraperAdmin(admin.ModelAdmin):
 
 class ProductChecker(models.Model):
     name = models.CharField(max_length=255, null=True, unique=True)
-    start_time = models.TimeField(null=True)
     description = models.TextField(null=True, blank=True)
     file = models.FileField(upload_to=scraper_path, null=True, validators=[validate_py_extension])
     task_id = models.CharField(null=True, blank=True, max_length=255)
@@ -151,7 +148,7 @@ class ProductChecker(models.Model):
 
 
 class ProductCheckerAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'file', 'start_time', 'last_scraped', 'spider_status', 'spider_log', 'site_actions',)
+    list_display = ('id', 'name', 'file', 'last_scraped', 'spider_status', 'spider_log', 'site_actions',)
     readonly_fields = ('last_scraped', 'spider_status', 'spider_log', 'site_actions',)
 
     def start_scraping(self, request, object_id, *args, **kwargs):
