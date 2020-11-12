@@ -64,9 +64,18 @@ def submission_delete(sender, instance, **kwargs):
     instance.file.delete(False)
 
 
+def start_selected(modeladmin, request, queryset):
+    for obj in queryset:
+        obj.start()
+
+
+start_selected.short_description = "Start selected"
+
+
 class ScraperAdmin(admin.ModelAdmin):
     list_display = ('id', 'site', 'file', 'last_scraped', 'spider_status', 'spider_log', 'site_actions',)
     readonly_fields = ('last_scraped', 'spider_status', 'spider_log', 'site_actions',)
+    actions = [start_selected]
 
     def start_scraping(self, request, object_id, *args, **kwargs):
         scraper = self.get_object(request, object_id)
@@ -150,6 +159,7 @@ class ProductChecker(models.Model):
 class ProductCheckerAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'file', 'last_scraped', 'spider_status', 'spider_log', 'site_actions',)
     readonly_fields = ('last_scraped', 'spider_status', 'spider_log', 'site_actions',)
+    actions = [start_selected]
 
     def start_scraping(self, request, object_id, *args, **kwargs):
         scraper = self.get_object(request, object_id)
