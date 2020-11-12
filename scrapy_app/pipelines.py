@@ -58,6 +58,17 @@ class ProductPipeline:
                     product_link=product_link, site=site
                 )
                 print("Product: {} added.".format(title))
+            except Product.MultipleObjectsReturned:
+                products = Product.objects.filter(site=site, product_link=product_link)
+                products.delete()
+                print("Multiple object returned and deleted.")
+                Product.objects.create(
+                    title=title,
+                    price=price, sale_price=sale_price,
+                    image_filename=image_filename, hq_image_filename=hq_image_filename,
+                    product_link=product_link, site=site
+                )
+                print("Product: {} added.".format(title))
         except Site.DoesNotExist:
             print("{} does not exist".format(site_name_gender_type))
         return item
