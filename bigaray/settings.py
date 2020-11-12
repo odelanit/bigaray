@@ -94,7 +94,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'deployphoenix_prod',
         'USER': 'deployphoenix',
-        'PASSWORD': 'mypassword',
+        'PASSWORD': '#;rC$3AJHC9~xKh<',
         'HOST': '127.0.0.1',
         'PORT': '5432'
     }
