@@ -8,10 +8,8 @@
 import logging
 from io import BytesIO
 
-import scrapy
 from PIL import Image
 from itemadapter import ItemAdapter
-from scrapy.exceptions import DropItem
 from scrapy.pipelines.images import ImagesPipeline, ImageException
 from scrapy_selenium import SeleniumRequest
 

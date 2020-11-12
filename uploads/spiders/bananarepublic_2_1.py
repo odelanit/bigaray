@@ -47,8 +47,8 @@ class ProductSpider(scrapy.Spider):
         products = response.css('.product-card')
         for product in products:
             title = product.css('.product-card__name::text').get()
-            price = product.css('span.product-price__no-strike::text').get()
-            image_url = product.css('img::attr(src)').get()
+            price = product.css('.product-card-price > div > span > span::text').get()
+            image_url = product.css('img.product-card__image::attr(src)').get()
             product_link = product.css('.product-card__link::attr(href)').get()
 
             if title and price and image_url and product_link:
