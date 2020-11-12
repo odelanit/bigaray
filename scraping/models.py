@@ -69,7 +69,7 @@ def start_selected(modeladmin, request, queryset):
         obj.start()
 
 
-start_selected.short_description = "Start selected"
+start_selected.short_description = "Start"
 
 
 class ScraperAdmin(admin.ModelAdmin):
