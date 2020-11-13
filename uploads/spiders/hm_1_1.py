@@ -1,12 +1,8 @@
-import time
+import json
 
 import scrapy
 from django.utils import timezone
-from parsel import Selector
 from scrapy import signals
-from selenium import webdriver
-from selenium.common.exceptions import NoSuchElementException
-from selenium.webdriver.firefox.options import Options
 
 from scraping.models import Scraper
 from scrapy_app.items import ProductItem
@@ -16,9 +12,12 @@ class ProductSpider(scrapy.Spider):
     name = 'Hm_1_1'  # name_gender_type
     allowed_domains = ['www2.hm.com']
     start_urls = [
-        'https://www2.hm.com/en_ca/women/New-arrivals/clothes.html'
+        'https://www2.hm.com/en_ca/women/New-arrivals/clothes/_jcr_content/main/productlisting.display.json?sort=stock&image-size=small&image=model&offset=0&page-size=717'
     ]
     base_url = 'https://www2.hm.com'
+    custom_settings = {
+        'ROBOTSTXT_OBEY': False,
+    }
 
     @classmethod
     def from_crawler(cls, crawler, *args, **kwargs):
@@ -36,32 +35,17 @@ class ProductSpider(scrapy.Spider):
             pass
 
     def parse(self, response, **kwargs):
-        options = Options()
-        options.headless = True
-        browser = webdriver.Firefox(options=options)
-        # browser = webdriver.Firefox()
-        browser.implicitly_wait(30)
-        browser.get(response.url)
-        try:
-            elements = browser.find_elements_by_css_selector('.slick-dots > li')
-            for el in elements:
-                el.click()
-                time.sleep(10)
-        except NoSuchElementException:
-            print('No slick dots button')
-
-        scrapy_selector = Selector(text=browser.page_source)
-        products = scrapy_selector.css('.hm-product-item')
-        for idx, product in enumerate(products):
+        json_response = json.loads(response.body)
+        products = json_response.get('products')
+        for product in products:
             item = ProductItem()
-            item['title'] = product.css('.item-heading > a::text').get()
-            price = product.css('span.price::text').get().strip()
-            item['price'] = price
-            image_url = product.css('img::attr(src)').get()
-            if image_url:
-                item['image_urls'] = [image_url, image_url]
-            else:
-                continue
-            item['product_link'] = self.base_url + product.css('a::attr(href)').get()
+            image_url = product.get('image')[0].get('src')
+            if 'https:' not in image_url:
+                image_url = 'https:' + image_url
+            hq_image_url = image_url.replace('/product/style', '/product/main')
+
+            item['title'] = product.get('title')
+            item['price'] = product.get('price')
+            item['image_urls'] = [image_url, hq_image_url]
+            item['product_link'] = self.base_url + product.get('link')
             yield item
-        browser.close()
