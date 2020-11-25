@@ -18,6 +18,15 @@ class ProductSpider(scrapy.Spider):
         crawler.signals.connect(spider.spider_closed, signal=signals.spider_closed)
         return spider
 
+    def spider_closed(self, spider, reason):
+        a = spider.name.split('_')
+        try:
+            scraper = Scraper.objects.get(site__name=a[0], site__gender=int(a[1]), site__type=int(a[2]))
+            scraper.last_scraped = timezone.now()
+            scraper.save()
+        except Scraper.DoesNotExist:
+            pass
+
     def parse(self, response, **kwargs):
         products = response.css('div.product-item')
         for idx, product in enumerate(products):
@@ -38,11 +47,3 @@ class ProductSpider(scrapy.Spider):
             item['product_link'] = self.domain + product_link
             yield item
 
-    def spider_closed(self, spider, reason):
-        a = spider.name.split('_')
-        try:
-            scraper = Scraper.objects.get(site__name=a[0], site__gender=int(a[1]), site__type=int(a[2]))
-            scraper.last_scraped = timezone.now()
-            scraper.save()
-        except Scraper.DoesNotExist:
-            pass

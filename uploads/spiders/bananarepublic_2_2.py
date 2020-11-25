@@ -37,6 +37,15 @@ class ProductSpider(scrapy.Spider):
         crawler.signals.connect(spider.spider_closed, signal=signals.spider_closed)
         return spider
 
+    def spider_closed(self, spider, reason):
+        a = spider.name.split('_')
+        try:
+            scraper = Scraper.objects.get(site__name=a[0], site__gender=int(a[1]), site__type=int(a[2]))
+            scraper.last_scraped = timezone.now()
+            scraper.save()
+        except Scraper.DoesNotExist:
+            pass
+
     def start_requests(self):
         for url in self.start_urls:
             yield SeleniumRequest(url=url)
@@ -58,12 +67,3 @@ class ProductSpider(scrapy.Spider):
                 item['image_urls'] = [image_url, image_url]
                 item['product_link'] = product_link
                 yield item
-
-    def spider_closed(self, spider, reason):
-        a = spider.name.split('_')
-        try:
-            scraper = Scraper.objects.get(site__name=a[0], site__gender=int(a[1]), site__type=int(a[2]))
-            scraper.last_scraped = timezone.now()
-            scraper.save()
-        except Scraper.DoesNotExist:
-            pass

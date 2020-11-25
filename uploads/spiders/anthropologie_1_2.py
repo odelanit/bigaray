@@ -25,6 +25,15 @@ class ProductSpider(scrapy.Spider):
         crawler.signals.connect(spider.spider_closed, signal=signals.spider_closed)
         return spider
 
+    def spider_closed(self, spider, reason):
+        a = spider.name.split('_')
+        try:
+            scraper = Scraper.objects.get(site__name=a[0], site__gender=int(a[1]), site__type=int(a[2]))
+            scraper.last_scraped = timezone.now()
+            scraper.save()
+        except Scraper.DoesNotExist:
+            pass
+
     def parse(self, response, **kwargs):
         url = response.request.url
         parsed = urlparse(url)
@@ -59,12 +68,3 @@ class ProductSpider(scrapy.Spider):
                     yield item
             else:
                 continue
-
-    def spider_closed(self, spider, reason):
-        a = spider.name.split('_')
-        try:
-            scraper = Scraper.objects.get(site__name=a[0], site__gender=int(a[1]), site__type=int(a[2]))
-            scraper.last_scraped = timezone.now()
-            scraper.save()
-        except Scraper.DoesNotExist:
-            pass
