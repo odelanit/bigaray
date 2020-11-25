@@ -2,7 +2,6 @@ from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.views import View
 from rest_framework import status
-from rest_framework.authentication import TokenAuthentication
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.parsers import JSONParser
@@ -15,7 +14,6 @@ from backend.serializers import UserSerializer
 
 
 class ProfileView(APIView):
-    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
@@ -109,7 +107,6 @@ class UserUpdateView(APIView):
 
 
 class HomePageDataView(APIView):
-    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
@@ -157,7 +154,6 @@ class SiteListView(View):
 
 
 class MyBrandsView(APIView):
-    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
@@ -173,7 +169,6 @@ class MyBrandsView(APIView):
 
 
 class ToggleUserSiteView(APIView):
-    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
@@ -201,7 +196,6 @@ class ToggleUserSiteView(APIView):
 
 
 class ProductsByBrandView(APIView):
-    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get(self, request, name):

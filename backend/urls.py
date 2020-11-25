@@ -1,10 +1,9 @@
-from django.urls import path, include
+from django.urls import path
 
 from backend.views import SiteListView, HomePageDataView, CustomAuthToken, ProfileView, MyBrandsView, \
     ToggleUserSiteView, UserCreateView, UserUpdateView, ProductsByBrandView
 
 urlpatterns = [
-    path('api/', include('rest_framework.urls')),
     path('api/sessions', CustomAuthToken.as_view()),
     path('api/me', ProfileView.as_view()),
     path('api/users', UserCreateView.as_view()),
