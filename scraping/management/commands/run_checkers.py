@@ -1,6 +1,6 @@
 from django.core.management import BaseCommand
 
-from scraping.models import Scraper, ProductChecker
+from scraping.models import ProductChecker
 
 
 class Command(BaseCommand):
